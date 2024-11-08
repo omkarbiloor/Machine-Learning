@@ -17,6 +17,7 @@ The objective of this project is to build a classification methodology to determ
 - [Prediction Process](#prediction-process)
 - [Dependencies](#dependencies)
 - [Usage](#usage)
+- [Acknowledgements](#acknowledgements)
 
 ---
 ## Architecture
@@ -139,4 +140,7 @@ Validation is performed on training files as per specifications in the "schema" 
 3. Run data validation, preprocessing, training, and prediction as per instructions in `src/`.
 
 ---
+
+## Acknowledgements
+This project was done with the mentorship of iNeuron.ai. Special thanks to the mentors for their guidance and support throughout the project.
 
