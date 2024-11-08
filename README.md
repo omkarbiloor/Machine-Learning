@@ -17,15 +17,41 @@ The objective of this project is to build a classification methodology to determ
 - [Prediction Process](#prediction-process)
 - [Dependencies](#dependencies)
 - [Usage](#usage)
-- [Contributing](#contributing)
-- [License](#license)
 
 ---
 
-## Architecture
-
-This project follows a structured approach, starting from data validation, data insertion into a database, model training, and prediction. The architecture ensures data quality and robustness in predictive modeling through various validation and preprocessing stages.
-
+Architecture
+Training Data Preparation
+Step	Description
+Start	Begin the process.
+Data (Batches) for Training	Receive data in batches for training.
+Data Validation	Validate data files using predefined schema.
+Data Transformation	Transform data into the required format.
+Data Insertion in Database	Insert transformed data into the database.
+Export Data to CSV for Training	Export data from the database to a CSV file for training.
+Model Training
+Step	Description
+Data Preprocessing	Check for null values, scale numeric data, and check correlations.
+Data Clustering	Create clusters using the KMeans algorithm.
+Get Best Model of Each Cluster	Train models and select the best-performing one per cluster.
+Hyperparameter Tuning	Fine-tune model parameters for optimal performance.
+Model Saving	Save the trained models for future use.
+Cloud Setup	Set up cloud infrastructure.
+Pushing App to Cloud	Deploy the application to the cloud.
+Application Start	Initialize the application for use.
+Data from Client	Receive client data for predictions.
+Prediction Data Handling
+Step	Description
+Data Validation	Validate incoming prediction data using the schema.
+Data Transformation	Transform data as required.
+Data Insertion in Database	Insert transformed prediction data into the database.
+Export Data to CSV for Prediction	Export data from the database for prediction.
+Data Preprocessing	Preprocess prediction data (similar steps as training).
+Data Clustering	Cluster prediction data using the trained KMeans model.
+Model Call for Specific Cluster	Use the appropriate model for each cluster to predict outcomes.
+Prediction	Perform predictions on the data.
+Export Prediction to CSV	Export prediction results to a CSV file.
+End	Complete the process.
 ---
 
 ## Data Description
