@@ -8,12 +8,12 @@ The objective of this project is to build a classification methodology to determ
 
 ## Table of Contents
 
-- [Problem Statement]
-- [Architecture]
-- [Data Description]
-- [Data Validation]
-- [Data Insertion in Database]
-- [Model Training]
+- [Problem Statement](#problem-statement)
+- [Architecture](#architecture)
+- [Data Description](#data-description)
+- [Data Validation](#data-validation)
+- [Data Insertion in Database](#data-insertion-in-database)
+- [Model Training](#model-training)
 - [Prediction Process](#prediction-process)
 - [Dependencies](#dependencies)
 - [Usage](#usage)
@@ -125,7 +125,7 @@ Validation is performed on training files as per specifications in the "schema" 
 
 1. Clone this repository:
    ```bash
-   git clone https://github.com/yourusername/credit-card-defaulters.git
+   git clone https://github.com/omkarbiloor/credit-card-defaulters.git
    ```
 2. Install dependencies:
    ```bash
@@ -135,16 +135,3 @@ Validation is performed on training files as per specifications in the "schema" 
 
 ---
 
-## Contributing
-
-Contributions are welcome! Please open an issue or create a pull request for improvements.
-
----
-
-## License
-
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
-
----
-
-Replace `yourusername` with your GitHub username if needed.
