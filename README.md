@@ -114,6 +114,3 @@ The dataset contains **32,561 records** with features that include demographics,
 
 ---
 
-## 📜 License
-
-This project is open-source and available under the [MIT License](LICENSE).
