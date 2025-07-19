@@ -1,8 +1,8 @@
-Flask==3.0.3
-Flask-Cors==4.0.0
-Flask-MonitoringDashboard==4.0.4
-gunicorn==23.0.0
-numpy==1.26.4
-scikit-learn==1.4.2
-joblib==1.4.2
-scipy==1.13.1
+Flask
+Flask-Cors
+Flask-MonitoringDashboard
+gunicorn
+numpy
+scikit-learn
+joblib
+scipy
