@@ -5,7 +5,7 @@ from DataTransformation_Prediction.DataTransformationPrediction import dataTrans
 from application_logging import logger
 
 class pred_validation:
-    def __init__(self,path):
+    def __init__(self, path):
         self.raw_data = Prediction_Data_validation(path)
         self.dataTransform = dataTransformPredict()
         self.dBOperation = dBOperation()
@@ -13,57 +13,52 @@ class pred_validation:
         self.log_writer = logger.App_Logger()
 
     def prediction_validation(self):
-
         try:
+            self.log_writer.log(self.file_object, '▶️ Start of Validation on files for prediction!')
 
-            self.log_writer.log(self.file_object,'Start of Validation on files for prediction!!')
-            #extracting values from prediction schema
-            LengthOfDateStampInFile,LengthOfTimeStampInFile,column_names,noofcolumns = self.raw_data.valuesFromSchema()
-            #getting the regex defined to validate filename
+            # Extracting schema details
+            LengthOfDateStampInFile, LengthOfTimeStampInFile, column_names, noofcolumns = self.raw_data.valuesFromSchema()
+            self.log_writer.log(self.file_object, f"📑 Schema Details Extracted - DateStampLen: {LengthOfDateStampInFile}, TimeStampLen: {LengthOfTimeStampInFile}, Columns: {noofcolumns}")
+
+            # Generate regex pattern and validate filenames
             regex = self.raw_data.manualRegexCreation()
-            #validating filename of prediction files
-            self.raw_data.validationFileNameRaw(regex,LengthOfDateStampInFile,LengthOfTimeStampInFile)
-            #validating column length in the file
+            self.log_writer.log(self.file_object, f"🔍 Using Regex: {regex} for filename validation")
+            self.raw_data.validationFileNameRaw(regex, LengthOfDateStampInFile, LengthOfTimeStampInFile)
+
+            # Column validation
             self.raw_data.validateColumnLength(noofcolumns)
-            #validating if any column has all values missing
             self.raw_data.validateMissingValuesInWholeColumn()
-            self.log_writer.log(self.file_object,"Raw Data Validation Complete!!")
+            self.log_writer.log(self.file_object, "✅ Raw Data Validation Complete")
 
-            self.log_writer.log(self.file_object,("Starting Data Transforamtion!!"))
-            #replacing blanks in the csv file with "Null" values to insert in table
+            # Data transformation
+            self.log_writer.log(self.file_object, "🔄 Starting Data Transformation")
             self.dataTransform.replaceMissingWithNull()
+            self.log_writer.log(self.file_object, "✅ Data Transformation Completed")
 
-            self.log_writer.log(self.file_object,"DataTransformation Completed!!!")
+            # Create prediction DB and table
+            self.log_writer.log(self.file_object, "🗄️ Creating Prediction Database and Tables")
+            self.dBOperation.createTableDb('Prediction', column_names)
+            self.log_writer.log(self.file_object, "✅ Table Creation Completed")
 
-            self.log_writer.log(self.file_object,"Creating Prediction_Database and tables on the basis of given schema!!!")
-            #create database with given name, if present open the connection! Create table with columns given in schema
-            self.dBOperation.createTableDb('Prediction',column_names)
-            self.log_writer.log(self.file_object,"Table creation Completed!!")
-            self.log_writer.log(self.file_object,"Insertion of Data into Table started!!!!")
-            #insert csv files in the table
+            # Insert good data into table
+            self.log_writer.log(self.file_object, "📥 Inserting Validated Data into Table")
             self.dBOperation.insertIntoTableGoodData('Prediction')
-            self.log_writer.log(self.file_object,"Insertion in Table completed!!!")
-            self.log_writer.log(self.file_object,"Deleting Good Data Folder!!!")
-            #Delete the good data folder after loading files in table
+            self.log_writer.log(self.file_object, "✅ Data Inserted Successfully")
+
+            # Clean-up: Remove folders and archive bad files
+            self.log_writer.log(self.file_object, "🧹 Cleaning Good Data Folder")
             self.raw_data.deleteExistingGoodDataTrainingFolder()
-            self.log_writer.log(self.file_object,"Good_Data folder deleted!!!")
-            self.log_writer.log(self.file_object,"Moving bad files to Archive and deleting Bad_Data folder!!!")
-            #Move the bad files to archive folder
+            self.log_writer.log(self.file_object, "✅ Good Data Folder Deleted")
+
+            self.log_writer.log(self.file_object, "📦 Archiving Bad Files")
             self.raw_data.moveBadFilesToArchiveBad()
-            self.log_writer.log(self.file_object,"Bad files moved to archive!! Bad folder Deleted!!")
-            self.log_writer.log(self.file_object,"Validation Operation completed!!")
-            self.log_writer.log(self.file_object,"Extracting csv file from table")
-            #export data in table to csvfile
+            self.log_writer.log(self.file_object, "✅ Bad Files Archived and Folder Deleted")
+
+            # Export from DB to final CSV
+            self.log_writer.log(self.file_object, "📤 Exporting Final Data from Table to CSV")
             self.dBOperation.selectingDatafromtableintocsv('Prediction')
+            self.log_writer.log(self.file_object, "🎯 Prediction Validation Workflow Complete")
 
         except Exception as e:
+            self.log_writer.log(self.file_object, f"❌ Error during prediction validation: {str(e)}")
             raise e
-
-
-
-
-
-
-
-
-
