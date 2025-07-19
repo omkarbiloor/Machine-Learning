@@ -1,129 +1,183 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Prediction Page</title>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-	<link rel="icon" href="data:image/png;base64,=" />
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
-	<link href="https://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,400italic,700italic" rel="stylesheet" type="text/css">
-	<style>
-		/* Styles omitted here to save space — keep your existing <style> block unchanged */
-	</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DefaulterInsight Prediction</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(to right, #e0eafc, #cfdef3);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    nav {
+      background-color: #fff;
+      padding: 1rem;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    .project-name {
+      font-size: 2rem;
+      font-weight: 600;
+      background: linear-gradient(90deg, #003366, #00BFFF);
+      -webkit-background-clip: text;
+      color: transparent;
+    }
+
+    .card {
+      border: none;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+      border-radius: 20px;
+    }
+
+    .btn-primary {
+      background: linear-gradient(90deg, #363e75, #0099ff);
+      border: none;
+      border-radius: 10px;
+      transition: all 0.3s ease;
+    }
+
+    .btn-primary:hover {
+      background: linear-gradient(90deg, #0099ff, #363e75);
+      transform: scale(1.02);
+    }
+
+    .result-box {
+      height: 300px;
+      overflow-y: auto;
+      background-color: #f9f9f9;
+      padding: 1rem;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+    }
+
+    #loading {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(255,255,255,0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+    }
+
+    .spinner-border {
+      width: 3rem;
+      height: 3rem;
+    }
+
+    footer {
+      margin-top: auto;
+      padding: 1rem 0;
+      background-color: #f1f1f1;
+      text-align: center;
+    }
+  </style>
 </head>
-
 <body>
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-light">
+    <div class="container">
+      <a class="navbar-brand project-name" href="#">
+        <img src="updatedlogo.webp" style="height: 60px; width: 60px;">
+        DefaulterInsight
+      </a>
+    </div>
+  </nav>
 
-	<!-- Navigation -->
-	<nav class="navbar navbar-light bg-light static-top">
-		<div class="container-fluid">
-			<a class="navbar-brand project-name" href="#" style="background: linear-gradient(90deg, #003366, #00BFFF); -webkit-background-clip: text;color: transparent;">
-				<img src="updatedlogo.webp" style="height: 90px; width: 90px;">
-				DefaulterInsight
-			</a>
-		</div>
-	</nav>
+  <!-- Prediction Section -->
+  <div class="container my-5">
+    <div class="text-center mb-4">
+      <h2 class="fw-bold text-primary">Prediction Portal</h2>
+      <p class="text-muted">Upload or select default file for credit card defaulter prediction</p>
+    </div>
+    <div class="row g-4">
+      <div class="col-md-6">
+        <div class="card p-4">
+          <form id="datafetch_form">
+            <div class="form-group mb-3">
+              <input type="text" name="csvfile" id="csvfile" class="form-control" placeholder="Enter absolute file path" required>
+            </div>
+            <div class="d-grid gap-2">
+              <button class="btn btn-primary" id="customfile">Custom File Predict</button>
+              <button class="btn btn-primary" id="defaultfile" data-path="Prediction_Batch_files">Default File Predict</button>
+            </div>
+          </form>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="card p-4 result-box">
+          <h5 class="text-primary">Results</h5>
+          <div class="json-result text-start"></div>
+        </div>
+      </div>
+    </div>
+  </div>
 
-	<!-- Prediction Form Section -->
-	<section class="testimonials text-center">
-		<div class="container-fluid">
-			<h4 class="my-4 title">Prediction</h4>
-			<div class="row">
-				<div class="col-md-6 col-xs-12">
-					<br/>
-					<form method="post" id="datafetch_form">
-						<div class="form-group files color">
-							<input type="text" name="csvfile" id="csvfile" class="form-control" placeholder="Enter absolute file path." required>
-						</div>
-						<div class="">
-							<button class="form-control btn-primary" id="customfile">Custom File Predict</button>
-						</div>
-						<br/><center><b>Or</b></center><br/>
-						<button class="form-control btn-primary mb-5" id="defaultfile" data-path="Prediction_Batch_files">
-							Default File Predict
-						</button>
-					</form>
-				</div>
-				<div class="res-container col-md-6 col-xs-12">
-					<div class="result-box shadow rounded-lg">
-						<h6 class="title">Results</h6>
-						<div class="json-result"></div>
-					</div>
-				</div>
-			</div>						
-		</div>
-	</section>
+  <!-- Loading Spinner -->
+  <div id="loading" style="display: none;">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
 
-	<!-- Footer -->
-	<footer class="footer">
-		<div class="container-fluid">
-			<div class="row">
-				<div class="col-lg-6 h-100 text-center my-auto mx-auto">
-					<ul class="list-inline mb-1">
-						<li class="list-inline-item"><a href="#">About</a></li>
-						<li class="list-inline-item">&sdot;</li>
-						<li class="list-inline-item"><a href="#">Contact</a></li>
-						<li class="list-inline-item">&sdot;</li>
-						<li class="list-inline-item"><a href="#">Privacy Policy</a></li>
-					</ul>
-					<p class="text-muted small mb-2 mb-lg-0">&copy; DefaulterInsight. All Rights Reserved.</p>
-				</div>
-			</div>
-		</div>
-	</footer>
+  <!-- Footer -->
+  <footer>
+    <p class="mb-1">&copy; 2025 DefaulterInsight. All Rights Reserved.</p>
+    <a href="#">About</a> &sdot;
+    <a href="#">Contact</a> &sdot;
+    <a href="#">Privacy Policy</a>
+  </footer>
 
-	<div id="loading"><div class="loader"></div></div>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script>
+    $(document).ready(function() {
+      $('#customfile').click(function(e) {
+        e.preventDefault();
+        $('#loading').show();
+        var path = $('#csvfile').val();
+        $.ajax({
+          url: '/predict',
+          type: 'POST',
+          contentType: 'application/json',
+          data: JSON.stringify({ filepath: path }),
+          success: function(response) {
+            $('.json-result').html('<pre>' + response + '</pre>');
+            $('#loading').hide();
+          },
+          error: function(xhr) {
+            $('.json-result').html('<pre>Error Occurred! ' + xhr.responseText + '</pre>');
+            $('#loading').hide();
+          }
+        });
+      });
 
-	<!-- JS Scripts -->
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
-	<script>
-		$(document).ready(function(){
-			$('#loading').hide();
-
-			// Custom File Predict
-			$("#customfile").click(function(e){
-				e.preventDefault();
-				$('#loading').show();
-				var path = $("#csvfile").val();
-				$.ajax({
-					url : "/predict",
-					type: "POST",
-					contentType: "application/json",
-					data: JSON.stringify({filepath: path}),
-					success: function(response){
-						$(".json-result").html('<p><strong>Prediction File created at:</strong> Prediction_Output_File/Predictions.csv</p><pre>' + response + '</pre>');	
-						$('#loading').hide();
-					},
-					error: function(xhr) {
-						$(".json-result").html('<pre>Error Occurred! ' + xhr.responseText + '</pre>');
-						$('#loading').hide();
-					}
-				});
-			});
-
-			// Default File Predict
-			$("#defaultfile").click(function(e){
-				e.preventDefault();
-				$('#loading').show();
-				var path = $(this).attr("data-path");
-				$.ajax({
-					url : "/predict",
-					type: "POST",
-					contentType: "application/json",
-					data: JSON.stringify({filepath: path}),
-					success: function(response){
-						$(".json-result").html('<p><strong>Prediction File created at:</strong> Prediction_Output_File/Predictions.csv</p><pre>' + response + '</pre>');
-						$('#loading').hide();
-					},
-					error: function(xhr) {
-						$(".json-result").html('<pre>Error Occurred! ' + xhr.responseText + '</pre>');
-						$('#loading').hide();
-					}
-				});
-			});
-		});
-	</script>
+      $('#defaultfile').click(function(e) {
+        e.preventDefault();
+        $('#loading').show();
+        var path = $(this).attr('data-path');
+        $.ajax({
+          url: '/predict',
+          type: 'POST',
+          contentType: 'application/json',
+          data: JSON.stringify({ filepath: path }),
+          success: function(response) {
+            $('.json-result').html('<pre>' + response + '</pre>');
+            $('#loading').hide();
+          },
+          error: function(xhr) {
+            $('.json-result').html('<pre>Error Occurred! ' + xhr.responseText + '</pre>');
+            $('#loading').hide();
+          }
+        });
+      });
+    });
+  </script>
 </body>
 </html>
