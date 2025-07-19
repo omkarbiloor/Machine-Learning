@@ -3,6 +3,7 @@ Flask-Cors
 Flask-MonitoringDashboard
 gunicorn
 numpy
+pandas
 scikit-learn
 joblib
 scipy
