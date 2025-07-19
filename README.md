@@ -1,146 +1,152 @@
-# Credit Card Defaulters Classification
+# Credit Card Defaulters Prediction - DefaulterInsight 💳📉
 
-## Problem Statement
+A machine learning solution to classify whether a person will default on their credit card payment for the next month. The system accepts batch input files, performs data validation, preprocessing, clustering, and model prediction to provide insights on customer credit risk.
 
-The objective of this project is to build a classification methodology to determine whether a person will default on their credit card payment for the next month. The solution utilizes data processing, clustering, and advanced modeling techniques to predict defaults and support decision-making in financial risk assessment.
-
----
-
-## Table of Contents
-
-- [Problem Statement](#problem-statement)
-- [Architecture](#architecture)
-- [Data Description](#data-description)
-- [Data Validation](#data-validation)
-- [Data Insertion in Database](#data-insertion-in-database)
-- [Model Training](#model-training)
-- [Prediction Process](#prediction-process)
-- [Dependencies](#dependencies)
-- [Usage](#usage)
-- [Acknowledgements](#acknowledgements)
-
----
-## Architecture
-The architecture for the credit card defaulter prediction system is organized into multiple stages, represented by a flowchart with interconnected processes. The key stages include:
-
-Training Phase:
-
-Start → Data (Batches) for Training → Data Validation → Data Transformation → Data Insertion in Database → Export Data from Database to CSV for Training.
-Data Preprocessing → Data Clustering → Get Best Model for Each Cluster → Hyperparameter Tuning → Model Saving → Cloud Setup → Pushing App to Cloud.
-Prediction Phase:
-
-Application Start → Data from Client to be Predicted → Data Validation → Data Transformation → Data Insertion in Database → Export Data from Database to CSV for Prediction.
-Data Preprocessing → Data Clustering → Model Call for Specific Cluster → Prediction → Export Prediction to CSV → END.
+### 🔗 Deployed App:
+**Web App** 👉 [https://machine-learning-b4qq.onrender.com](https://machine-learning-b4qq.onrender.com)
 
 ---
 
-## Data Description
+## 🧠 Problem Statement
 
-The data used in this project is provided in multiple sets of files by the client, typically extracted from the census bureau. It contains 32,561 instances with the following attributes:
-
-### Features
-
-- **LIMIT_BAL**: Credit Limit (continuous)
-- **SEX**: Gender (Categorical: 1 = male; 2 = female)
-- **EDUCATION**: Education level (Categorical: 1 = graduate school; 2 = university; 3 = high school; 4 = others)
-- **MARRIAGE**: Marital status (1 = married; 2 = single; 3 = others)
-- **AGE**: Age of the person (continuous)
-- **PAY_0 to PAY_6**: Past payment history (monthly records from April to September 2005)
-- **BILL_AMT1 to BILL_AMT6**: Amount of bill statements (six months)
-- **PAY_AMT1 to PAY_AMT6**: Amount of previous payments (six months)
-
-### Target Label
-
-- **default payment next month**: Whether a person defaults on their credit card payment next month (Yes = 1, No = 0)
-
-### Additional Requirements
-
-Apart from the training files, a "schema" file is required containing:
-- File names
-- Length of date and time values in filenames
-- Number of columns
-- Names and data types of columns
+Build a classification model that predicts whether a person will default on credit card payment for the upcoming month based on historical financial records.
 
 ---
 
-## Data Validation
+## 🧾 Input Dataset
 
-Validation is performed on training files as per specifications in the "schema" file, covering:
+The dataset contains **32,561** entries with the following features:
 
-1. **Name Validation**: Validates file names using regex patterns. Files are moved to `Good_Data_Folder` if valid; otherwise, to `Bad_Data_Folder`.
-2. **Number of Columns**: Validates that the number of columns matches the schema specification.
-3. **Name of Columns**: Validates that column names match those in the schema.
-4. **Datatype of Columns**: Ensures data types are as specified. Invalid files are moved to `Bad_Data_Folder`.
-5. **Null Values in Columns**: If all values in a column are NULL, the file is moved to `Bad_Data_Folder`.
+| Feature Name | Description |
+|--------------|-------------|
+| `LIMIT_BAL` | Credit Limit (Continuous) |
+| `SEX` | 1 = Male, 2 = Female |
+| `EDUCATION` | 1 = Graduate, 2 = University, 3 = High School, 4 = Others |
+| `MARRIAGE` | 1 = Married, 2 = Single, 3 = Others |
+| `AGE` | Age of the person |
+| `PAY_0 to PAY_6` | Past monthly payment records |
+| `BILL_AMT1 to BILL_AMT6` | Amount of bill statements |
+| `PAY_AMT1 to PAY_AMT6` | Amount of previous payments |
 
----
-
-## Data Insertion in Database
-
-1. **Database Creation and Connection**: Creates or connects to the specified database.
-2. **Table Creation**: Creates a "Good_Data" table for validated files based on schema specifications.
-3. **Data Insertion**: Inserts files from `Good_Data_Folder` into the table. Invalid files (due to data type issues) are moved to `Bad_Data_Folder`.
-
----
-
-## Model Training
-
-1. **Data Export from DB**: Data is exported from the database as a CSV file for model training.
-2. **Data Preprocessing**:
-   - Handle null values using a categorical imputer.
-   - Scale numeric values using a standard scaler.
-   - Check for correlation among features.
-3. **Clustering**:
-   - Uses KMeans for clustering.
-   - Optimal number of clusters is selected using the Elbow Plot and the `KneeLocator` function.
-4. **Model Selection**:
-   - For each cluster, "Naïve Bayes" and "XGBoost" models are trained.
-   - Hyperparameter tuning is performed using GridSearch.
-   - The best-performing model (based on AUC score) is saved for each cluster.
+**Target:**
+- `default payment next month`: `1 = Yes`, `0 = No`
 
 ---
 
-## Prediction Process
+## 📊 Project Architecture
 
-1. **Data Export from DB**: Prediction data is exported from the database as a CSV file.
-2. **Data Preprocessing**:
-   - Handle null values using a categorical imputer.
-   - Scale numeric values.
-   - Check for correlation.
-3. **Clustering**:
-   - Uses the pre-trained KMeans model to predict clusters for the data.
-4. **Prediction**:
-   - Loads the best model for each cluster to make predictions.
-   - Saves predictions as a CSV file at a specified location.
+### 1. 🔎 Data Validation
 
----
+Performed on training and prediction files using a **schema file**, including:
 
-## Dependencies
+- **Filename** format & length checks
+- **Number of columns**
+- **Column names & data types**
+- **Missing/null values**
 
-- Python 3.x
-- pandas
-- numpy
-- scikit-learn
-- XGBoost
-- matplotlib
-- SQLAlchemy
+Valid files → `Good_Data_Folder`  
+Invalid files → `Bad_Data_Folder`
 
 ---
 
-## Usage
+### 2. 🛢️ Database Operations
 
-1. Clone this repository:
-   ```bash
-   git clone https://github.com/omkarbiloor/credit-card-defaulters.git
-   ```
-2. Install dependencies:
-   ```bash
-   pip install -r requirements.txt
-   ```
-3. Run data validation, preprocessing, training, and prediction as per instructions in `src/`.
+- Create/open database
+- Create or reuse `Good_Data` table
+- Insert valid files into DB
 
 ---
 
-## Acknowledgements
-This project was done with the mentorship of iNeuron.ai. Special thanks to the mentors for their guidance and support throughout the project.
+### 3. 🧪 Model Training Pipeline
+
+- **Export Data from DB**
+- **Preprocessing:**
+  - Null value imputation
+  - Standard scaling
+  - Correlation check
+- **Clustering:**
+  - KMeans with `KneeLocator` for optimal cluster count
+- **Model Selection:**
+  - Naive Bayes and XGBoost trained for each cluster
+  - Select best model based on AUC score
+
+---
+
+### 4. 🔮 Prediction Workflow
+
+- Accept user-uploaded files or use default path
+- Apply same preprocessing as training
+- Predict cluster using saved KMeans model
+- Load the appropriate model for each cluster
+- Save predictions with IDs to CSV and return path
+
+---
+
+## 🖥️ Deployment Instructions
+
+This project is deployed on **Render.com** (can also be deployed to Heroku):
+
+1. Create `Procfile`:
+
+2. Generate `requirements.txt`:
+```bash
+pip freeze > requirements.txt
+Initialize Git & Push:
+
+bash
+Copy
+Edit
+git init
+heroku login
+heroku create <your-app-name>
+git add .
+git commit -am "Initial Commit"
+git push heroku master
+📂 Folder Structure
+pgsql
+Copy
+Edit
+├── Training_Batch_Files/
+├── Prediction_Batch_Files/
+├── Good_Raw/
+├── Bad_Raw/
+├── artifacts/
+│   ├── models/
+│   ├── predictions/
+│   └── cluster_models/
+├── main.py
+├── templates/
+│   └── index.html
+├── static/
+├── trainingModel.py
+├── predictionFromModel.py
+├── schema_training.json
+├── schema_prediction.json
+└── README.md
+🧪 Tech Stack
+Python
+
+Flask
+
+Gunicorn
+
+XGBoost
+
+Naive Bayes
+
+KMeans Clustering
+
+SQL/SQLite3
+
+HTML/CSS + Bootstrap
+
+Render.com / Heroku
+
+⚠️ Note
+All inputs must follow schema-based format for successful processing.
+
+Invalid files are segregated and logged for user review.
+
+📌 Credits
+Project built and maintained by Omkar Biloor
 
