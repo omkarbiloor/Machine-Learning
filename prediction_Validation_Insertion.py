@@ -18,47 +18,51 @@ class pred_validation:
 
             # Extracting schema details
             LengthOfDateStampInFile, LengthOfTimeStampInFile, column_names, noofcolumns = self.raw_data.valuesFromSchema()
-            self.log_writer.log(self.file_object, f"📑 Schema Details Extracted - DateStampLen: {LengthOfDateStampInFile}, TimeStampLen: {LengthOfTimeStampInFile}, Columns: {noofcolumns}")
+            self.log_writer.log(
+                self.file_object,
+                f"📑 Schema Extracted | DateStamp: {LengthOfDateStampInFile}, TimeStamp: {LengthOfTimeStampInFile}, Columns: {noofcolumns}"
+            )
 
             # Generate regex pattern and validate filenames
             regex = self.raw_data.manualRegexCreation()
-            self.log_writer.log(self.file_object, f"🔍 Using Regex: {regex} for filename validation")
+            self.log_writer.log(self.file_object, f"🔍 Regex Pattern for Validation: {regex}")
             self.raw_data.validationFileNameRaw(regex, LengthOfDateStampInFile, LengthOfTimeStampInFile)
 
-            # Column validation
+            # Validate columns
             self.raw_data.validateColumnLength(noofcolumns)
             self.raw_data.validateMissingValuesInWholeColumn()
-            self.log_writer.log(self.file_object, "✅ Raw Data Validation Complete")
+            self.log_writer.log(self.file_object, "✅ Column Validation Completed")
 
-            # Data transformation
-            self.log_writer.log(self.file_object, "🔄 Starting Data Transformation")
+            # Transform data
+            self.log_writer.log(self.file_object, "🔄 Replacing missing values with NULL")
             self.dataTransform.replaceMissingWithNull()
             self.log_writer.log(self.file_object, "✅ Data Transformation Completed")
 
-            # Create prediction DB and table
-            self.log_writer.log(self.file_object, "🗄️ Creating Prediction Database and Tables")
+            # Create Prediction DB & Table
+            self.log_writer.log(self.file_object, "🛠️ Creating Prediction Database and Table")
             self.dBOperation.createTableDb('Prediction', column_names)
-            self.log_writer.log(self.file_object, "✅ Table Creation Completed")
+            self.log_writer.log(self.file_object, "✅ Table Creation Successful")
 
-            # Insert good data into table
-            self.log_writer.log(self.file_object, "📥 Inserting Validated Data into Table")
+            # Insert Good Data
+            self.log_writer.log(self.file_object, "📥 Inserting Cleaned Data into Prediction Table")
             self.dBOperation.insertIntoTableGoodData('Prediction')
-            self.log_writer.log(self.file_object, "✅ Data Inserted Successfully")
+            self.log_writer.log(self.file_object, "✅ Data Insertion Successful")
 
-            # Clean-up: Remove folders and archive bad files
-            self.log_writer.log(self.file_object, "🧹 Cleaning Good Data Folder")
+            # Clean Good Data Folder
+            self.log_writer.log(self.file_object, "🧹 Deleting Good Data Folder")
             self.raw_data.deleteExistingGoodDataTrainingFolder()
             self.log_writer.log(self.file_object, "✅ Good Data Folder Deleted")
 
+            # Archive Bad Files
             self.log_writer.log(self.file_object, "📦 Archiving Bad Files")
             self.raw_data.moveBadFilesToArchiveBad()
-            self.log_writer.log(self.file_object, "✅ Bad Files Archived and Folder Deleted")
+            self.log_writer.log(self.file_object, "✅ Bad Files Archived")
 
-            # Export from DB to final CSV
-            self.log_writer.log(self.file_object, "📤 Exporting Final Data from Table to CSV")
+            # Export CSV
+            self.log_writer.log(self.file_object, "📤 Exporting Final Prediction File")
             self.dBOperation.selectingDatafromtableintocsv('Prediction')
-            self.log_writer.log(self.file_object, "🎯 Prediction Validation Workflow Complete")
+            self.log_writer.log(self.file_object, "🎯 Prediction Validation Completed Successfully")
 
         except Exception as e:
-            self.log_writer.log(self.file_object, f"❌ Error during prediction validation: {str(e)}")
+            self.log_writer.log(self.file_object, f"❌ Exception during validation: {str(e)}")
             raise e
